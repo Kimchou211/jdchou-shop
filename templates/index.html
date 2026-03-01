@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jdchou Shop - ទិញទំនិញ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Khmer OS Battambang', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333;}
+        .container { display: flex; max-width: 1200px; margin: 0 auto; gap: 20px; align-items: flex-start; flex-wrap: wrap;}
+        
+        .products-area { flex: 2; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; min-width: 300px;}
+        .product-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
+        .product-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .price { color: #e74c3c; font-weight: bold; font-size: 18px; margin: 10px 0; }
+        .btn-add { background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; font-family: inherit;}
+        .btn-add:hover { background: #27ae60; }
+        
+        .cart-area { flex: 1; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 20px; min-width: 300px;}
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #eee; font-size: 14px;}
+        .cart-total { font-size: 20px; font-weight: bold; margin: 20px 0; display: flex; justify-content: space-between; color: #d32f2f;}
+        .btn-checkout { background: #d32f2f; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-family: inherit;}
+        .btn-checkout:disabled { background: #ccc; cursor: not-allowed; }
+        
+        /* ========================================= */
+        /* ស្ទាយថ្មីសម្រាប់ Bakong KHQR Design ពណ៌ក្រហម */
+        /* ========================================= */
+        #payment-section { display: none; margin-top: 25px; }
+        .timer-box { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 15px; border: 1px solid #ffeeba; }
+        
+        .khqr-card { background: #E02B20; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 6px 15px rgba(224, 43, 32, 0.3); margin: 0 auto;}
+        .khqr-header { color: white; font-size: 20px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .khqr-badge { background: white; color: #E02B20; padding: 2px 10px; border-radius: 20px; font-size: 14px; font-family: Arial, sans-serif; font-weight: 900;}
+        
+        .khqr-body { background: white; border-radius: 10px; padding: 20px; color: #333; position: relative;}
+        .merchant-name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+        .payment-amount { color: #d32f2f; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+        
+        #qrcode { display: flex; justify-content: center; margin-bottom: 10px; padding: 10px; border: 2px dashed #ccc; border-radius: 10px;}
+        .scan-text { font-size: 12px; color: #666; margin-top: 10px;}
+        
+        .deeplink-btn { background: #1976d2; color: white; padding: 12px; text-decoration: none; border-radius: 8px; display: block; text-align: center; margin-top: 15px; font-weight: bold;}
+        
+        /* ផ្ទាំងជោគជ័យ និង ផ្ទាំងផុតកំណត់ */
+        .success-box { display: none; text-align: center; margin-top: 20px; padding: 20px; background: #e8f5e9; border-radius: 8px; color: #2e7d32;}
+        .expired-box { display: none; text-align: center; margin-top: 20px; padding: 20px; background: #ffebee; border-radius: 8px; color: #c62828;}
+    </style>
+</head>
+<body>
+
+<h2 style="text-align: center; margin-bottom: 30px;">សូមស្វាគមន៍មកកាន់ Jdchou Shop</h2>
+
+<div class="container">
+    <div class="products-area">
+        <div class="product-card">
+            <img src="https://dummyimage.com/200x150/000/fff&text=Laptop" alt="Laptop">
+            <h3>Laptop Pro</h3>
+            <div class="price">២០០០ រៀល</div>
+            <button class="btn-add" onclick="addToCart('Laptop Pro', 2000)">បន្ថែមចូលកន្ត្រក</button>
+        </div>
+        <div class="product-card">
+            <img src="https://dummyimage.com/200x150/000/fff&text=Mouse" alt="Mouse">
+            <h3>Wireless Mouse</h3>
+            <div class="price">៥០០ រៀល</div>
+            <button class="btn-add" onclick="addToCart('Wireless Mouse', 500)">បន្ថែមចូលកន្ត្រក</button>
+        </div>
+        <div class="product-card">
+            <img src="https://dummyimage.com/200x150/000/fff&text=Keyboard" alt="Keyboard">
+            <h3>Mechanical Keyboard</h3>
+            <div class="price">១០០០ រៀល</div>
+            <button class="btn-add" onclick="addToCart('Mechanical Keyboard', 1000)">បន្ថែមចូលកន្ត្រក</button>
+        </div>
+    </div>
+
+    <div class="cart-area">
+        <h3>🛒 កន្ត្រកទំនិញ</h3>
+        <div id="cart-items">
+            <p style="color: #888; text-align: center; font-size: 14px;">មិនទាន់មានទំនិញទេ</p>
+        </div>
+        <div class="cart-total">
+            <span>សរុប៖</span>
+            <span id="total-price">0 រៀល</span>
+        </div>
+
+        <button id="checkout-btn" class="btn-checkout" onclick="processCheckout()" disabled>ទូទាត់ប្រាក់ (Bakong)</button>
+
+        <div id="payment-section">
+            <div class="timer-box">
+                ⏳ ផុតកំណត់ក្នុង៖ <span id="time-left">03:00</span>
+            </div>
+            
+            <div class="khqr-card">
+                <div class="khqr-header">
+                    <span class="khqr-badge">KHQR</span>
+                    <span>Pay with Bakong</span>
+                </div>
+                <div class="khqr-body">
+                    <div class="merchant-name">Jdchou Shop</div>
+                    <div class="payment-amount" id="display-amount">0 KHR</div>
+                    
+                    <div id="qrcode"></div>
+                    
+                    <div class="scan-text">Scan across all supported apps</div>
+                </div>
+            </div>
+            <a id="deeplink" href="#" class="deeplink-btn">បើកកម្មវិធីធនាគារ (Mobile App)</a>
+        </div>
+
+        <div id="success-section" class="success-box">
+            <div style="font-size: 40px;">✅</div>
+            <h3 style="margin: 10px 0;">ជោគជ័យ!</h3>
+            <p style="font-size: 14px; margin: 0;">ទំនិញត្រូវបានទូទាត់រួចរាល់។</p>
+        </div>
+
+        <div id="expired-section" class="expired-box">
+            <div style="font-size: 40px;">⏳</div>
+            <h3 style="margin: 10px 0;">ផុតកំណត់!</h3>
+            <p style="font-size: 14px; margin: 0;">សូមចុច "ទូទាត់ប្រាក់" ម្តងទៀត ដើម្បីបង្កើត QR ថ្មី។</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+    let totalAmount = 0;
+    let pollInterval;
+    let timerInterval;
+
+    function addToCart(name, price) {
+        cart.push({ name: name, price: price });
+        totalAmount += price;
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const cartItemsDiv = document.getElementById('cart-items');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p style="color: #888; text-align: center;">មិនទាន់មានទំនិញទេ</p>';
+            checkoutBtn.disabled = true;
+        } else {
+            cartItemsDiv.innerHTML = '';
+            cart.forEach(item => {
+                cartItemsDiv.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>${item.price} រៀល</span>
+                    </div>
+                `;
+            });
+            checkoutBtn.disabled = false;
+        }
+        document.getElementById('total-price').innerText = totalAmount + ' រៀល';
+        // ដាក់តម្លៃចូលក្នុងកាត QR ទុកឲ្យហើយ
+        document.getElementById('display-amount').innerText = totalAmount + ' KHR'; 
+    }
+
+    function processCheckout() {
+        if (totalAmount <= 0) return;
+
+        const btn = document.getElementById('checkout-btn');
+        btn.innerText = "កំពុងដំណើរការ...";
+        btn.disabled = true;
+
+        // លាក់ផ្ទាំងចាស់ៗសិនមុននឹងបង្កើតថ្មី
+        document.getElementById('success-section').style.display = 'none';
+        document.getElementById('expired-section').style.display = 'none';
+
+        fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: totalAmount })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                btn.style.display = 'none';
+                document.getElementById('payment-section').style.display = 'block';
+
+                document.getElementById("qrcode").innerHTML = "";
+                new QRCode(document.getElementById("qrcode"), {
+                    text: data.qr_string,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+
+                if (data.deeplink) {
+                    document.getElementById('deeplink').href = data.deeplink;
+                }
+
+                // ចាប់ផ្តើមរាប់ម៉ោង ៣ នាទី (១៨០ វិនាទី)
+                startCountdown(180);
+                
+                // ចាប់ផ្តើមឆែកស្ថានភាពបង់ប្រាក់
+                checkPaymentStatus(data.bill_number);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('មានបញ្ហាក្នុងការបង្កើត QR');
+            btn.innerText = "ទូទាត់ប្រាក់ (Bakong)";
+            btn.disabled = false;
+        });
+    }
+
+    // មុខងាររាប់ថយក្រោយ (Countdown)
+    function startCountdown(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('time-left');
+        
+        clearInterval(timerInterval); // Reset បើមានរាប់ពីមុន
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                // ពេលផុតម៉ោង៖ បញ្ឈប់ការរាប់, បញ្ឈប់ការឆែកលុយ, និងលាក់ QR ចោល
+                clearInterval(timerInterval);
+                clearInterval(pollInterval);
+                
+                document.getElementById('payment-section').style.display = 'none';
+                document.getElementById('expired-section').style.display = 'block';
+                
+                // បើកប៊ូតុងឲ្យចុចទូទាត់ម្តងទៀត
+                const btn = document.getElementById('checkout-btn');
+                btn.innerText = "ទូទាត់ប្រាក់ម្តងទៀត";
+                btn.style.display = 'block';
+                btn.disabled = false;
+            }
+        }, 1000);
+    }
+
+    function checkPaymentStatus(bill_number) {
+        pollInterval = setInterval(() => {
+            fetch(`/api/status/${bill_number}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // បើបង់ជោគជ័យ៖ បញ្ឈប់អ្វីៗទាំងអស់
+                    clearInterval(pollInterval);
+                    clearInterval(timerInterval);
+                    
+                    document.getElementById('payment-section').style.display = 'none';
+                    document.getElementById('success-section').style.display = 'block';
+                    
+                    // សម្អាតកន្ត្រកទំនិញ
+                    cart = [];
+                    totalAmount = 0;
+                    updateCartUI();
+                    
+                    // បង្ហាញប៊ូតុងដើមវិញ
+                    const btn = document.getElementById('checkout-btn');
+                    btn.innerText = "ទូទាត់ប្រាក់ (Bakong)";
+                    btn.style.display = 'block';
+                }
+            });
+        }, 2000); // ឆែករៀងរាល់ ២ វិនាទី
+    }
+</script>
+
+</body>
+</html>
