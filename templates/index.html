@@ -9,6 +9,7 @@
         body { font-family: 'Khmer OS Battambang', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333;}
         .container { display: flex; max-width: 1200px; margin: 0 auto; gap: 20px; align-items: flex-start; flex-wrap: wrap;}
         
+        /* ផ្នែកបង្ហាញទំនិញ */
         .products-area { flex: 2; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; min-width: 300px;}
         .product-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
         .product-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
@@ -16,15 +17,14 @@
         .btn-add { background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; font-family: inherit;}
         .btn-add:hover { background: #27ae60; }
         
+        /* ផ្នែកកន្ត្រកទំនិញ */
         .cart-area { flex: 1; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 20px; min-width: 300px;}
         .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #eee; font-size: 14px;}
         .cart-total { font-size: 20px; font-weight: bold; margin: 20px 0; display: flex; justify-content: space-between; color: #d32f2f;}
         .btn-checkout { background: #d32f2f; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-family: inherit;}
         .btn-checkout:disabled { background: #ccc; cursor: not-allowed; }
         
-        /* ========================================= */
-        /* ស្ទាយថ្មីសម្រាប់ Bakong KHQR Design ពណ៌ក្រហម */
-        /* ========================================= */
+        /* ផ្នែកបង្ហាញ QR ស្ទាយ Bakong */
         #payment-section { display: none; margin-top: 25px; }
         .timer-box { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 15px; border: 1px solid #ffeeba; }
         
@@ -38,8 +38,6 @@
         
         #qrcode { display: flex; justify-content: center; margin-bottom: 10px; padding: 10px; border: 2px dashed #ccc; border-radius: 10px;}
         .scan-text { font-size: 12px; color: #666; margin-top: 10px;}
-        
-        .deeplink-btn { background: #1976d2; color: white; padding: 12px; text-decoration: none; border-radius: 8px; display: block; text-align: center; margin-top: 15px; font-weight: bold;}
         
         /* ផ្ទាំងជោគជ័យ និង ផ្ទាំងផុតកំណត់ */
         .success-box { display: none; text-align: center; margin-top: 20px; padding: 20px; background: #e8f5e9; border-radius: 8px; color: #2e7d32;}
@@ -103,8 +101,7 @@
                     <div class="scan-text">Scan across all supported apps</div>
                 </div>
             </div>
-            <a id="deeplink" href="#" class="deeplink-btn">បើកកម្មវិធីធនាគារ (Mobile App)</a>
-        </div>
+            </div>
 
         <div id="success-section" class="success-box">
             <div style="font-size: 40px;">✅</div>
@@ -152,7 +149,6 @@
             checkoutBtn.disabled = false;
         }
         document.getElementById('total-price').innerText = totalAmount + ' រៀល';
-        // ដាក់តម្លៃចូលក្នុងកាត QR ទុកឲ្យហើយ
         document.getElementById('display-amount').innerText = totalAmount + ' KHR'; 
     }
 
@@ -163,7 +159,6 @@
         btn.innerText = "កំពុងដំណើរការ...";
         btn.disabled = true;
 
-        // លាក់ផ្ទាំងចាស់ៗសិនមុននឹងបង្កើតថ្មី
         document.getElementById('success-section').style.display = 'none';
         document.getElementById('expired-section').style.display = 'none';
 
@@ -188,31 +183,31 @@
                     correctLevel : QRCode.CorrectLevel.H
                 });
 
-                if (data.deeplink) {
-                    document.getElementById('deeplink').href = data.deeplink;
-                }
-
                 // ចាប់ផ្តើមរាប់ម៉ោង ៣ នាទី (១៨០ វិនាទី)
                 startCountdown(180);
                 
                 // ចាប់ផ្តើមឆែកស្ថានភាពបង់ប្រាក់
                 checkPaymentStatus(data.bill_number);
+            } else {
+                alert("បញ្ហា: " + data.message);
+                btn.innerText = "ទូទាត់ប្រាក់ (Bakong)";
+                btn.disabled = false;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('មានបញ្ហាក្នុងការបង្កើត QR');
+            alert('មានបញ្ហាក្នុងការបង្កើត QR សូមសាកល្បងម្តងទៀត');
             btn.innerText = "ទូទាត់ប្រាក់ (Bakong)";
             btn.disabled = false;
         });
     }
 
-    // មុខងាររាប់ថយក្រោយ (Countdown)
+    // មុខងាររាប់ថយក្រោយ
     function startCountdown(duration) {
         let timer = duration, minutes, seconds;
         const display = document.getElementById('time-left');
         
-        clearInterval(timerInterval); // Reset បើមានរាប់ពីមុន
+        clearInterval(timerInterval);
         
         timerInterval = setInterval(function () {
             minutes = parseInt(timer / 60, 10);
@@ -224,14 +219,12 @@
             display.textContent = minutes + ":" + seconds;
 
             if (--timer < 0) {
-                // ពេលផុតម៉ោង៖ បញ្ឈប់ការរាប់, បញ្ឈប់ការឆែកលុយ, និងលាក់ QR ចោល
                 clearInterval(timerInterval);
                 clearInterval(pollInterval);
                 
                 document.getElementById('payment-section').style.display = 'none';
                 document.getElementById('expired-section').style.display = 'block';
                 
-                // បើកប៊ូតុងឲ្យចុចទូទាត់ម្តងទៀត
                 const btn = document.getElementById('checkout-btn');
                 btn.innerText = "ទូទាត់ប្រាក់ម្តងទៀត";
                 btn.style.display = 'block';
@@ -240,13 +233,13 @@
         }, 1000);
     }
 
+    // មុខងារឆែកមើលការបង់ប្រាក់
     function checkPaymentStatus(bill_number) {
         pollInterval = setInterval(() => {
             fetch(`/api/status/${bill_number}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
-                    // បើបង់ជោគជ័យ៖ បញ្ឈប់អ្វីៗទាំងអស់
                     clearInterval(pollInterval);
                     clearInterval(timerInterval);
                     
@@ -258,7 +251,6 @@
                     totalAmount = 0;
                     updateCartUI();
                     
-                    // បង្ហាញប៊ូតុងដើមវិញ
                     const btn = document.getElementById('checkout-btn');
                     btn.innerText = "ទូទាត់ប្រាក់ (Bakong)";
                     btn.style.display = 'block';
